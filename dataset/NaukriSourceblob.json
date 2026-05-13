@@ -1,0 +1,45 @@
+{
+	"name": "NaukriSourceblob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "customer_header_1",
+				"folderPath": "sourcedata",
+				"container": "jobapplication"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "custid",
+				"type": "String"
+			},
+			{
+				"name": "fname",
+				"type": "String"
+			},
+			{
+				"name": "lname",
+				"type": "String"
+			},
+			{
+				"name": "age",
+				"type": "String"
+			},
+			{
+				"name": "profession",
+				"type": "String"
+			}
+		]
+	}
+}
