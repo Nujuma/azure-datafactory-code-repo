@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "customerdetails.json",
 				"folderPath": "jobapplication-target",
 				"fileSystem": "adlscontainer"
 			}
