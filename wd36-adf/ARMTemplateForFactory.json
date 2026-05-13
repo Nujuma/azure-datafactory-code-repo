@@ -1,0 +1,336 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "wd36-adf"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"NaukriSourceStorageAcc1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'NaukriSourceStorageAcc1'"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "data-sqlserver-db.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "mydb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "nujuma"
+		},
+		"NaukriSourceStorageAcc1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlsdatastorage2.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "device_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "device_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "brand",
+						"type": "nvarchar"
+					},
+					{
+						"name": "model",
+						"type": "nvarchar"
+					},
+					{
+						"name": "os",
+						"type": "nvarchar"
+					},
+					{
+						"name": "owner_customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "status",
+						"type": "nvarchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "datetime2",
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "mydb",
+					"table": "dim_device"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "mydb",
+					"table": "dim_device"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dataflow_sink1",
+						"folderPath": "sourcedata",
+						"container": "jobapplication"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NaukriSourceStorageAcc1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('NaukriSourceStorageAcc1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('NaukriSourceStorageAcc1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable4",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "surrogateKey1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "cast1"
+						},
+						{
+							"name": "rank1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "alterRow1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     partitionparam as integer (2)",
+						"}",
+						"source(output(",
+						"          cid as integer,",
+						"          custid as integer,",
+						"          call_dur as integer,",
+						"          cost as double,",
+						"          insertdt as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     enableCdc: true,",
+						"     mode: 'read',",
+						"     skipInitialLoad: false,",
+						"     waterMarkColumn: 'cid',",
+						"     batchSize: 2,",
+						"     isolationLevel: 'READ_COMMITTED',",
+						"     query: 'select * from izdb.cdr',",
+						"     format: 'query',",
+						"     partitionBy('roundRobin', ($partitionparam))) ~> source1",
+						"filter1 select(mapColumn(",
+						"          cid,",
+						"          customerid = custid,",
+						"          call_dur,",
+						"          cost,",
+						"          insertdt",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(loaddt = currentDate()) ~> derivedColumn1",
+						"derivedColumn1 keyGenerate(output(seqnosk as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L,",
+						"     partitionBy('roundRobin', 2)) ~> surrogateKey1",
+						"source1 filter(greaterOrEqual(call_dur,401)) ~> filter1",
+						"surrogateKey1 cast(output(",
+						"          customerid as string",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"filter1 rank(desc(call_dur, true),",
+						"     caseInsensitive: true,",
+						"     output(custid_rnk as long)) ~> rank1",
+						"rank1 aggregate(groupBy(custid,",
+						"          custid_rnk),",
+						"     avg_call_dur = avg(call_dur),",
+						"          sum_cost = sum(cost)) ~> aggregate1",
+						"aggregate1 alterRow(deleteIf(lesserOrEqual(sum_cost,5))) ~> alterRow1",
+						"cast1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     preCommands: [],",
+						"     postCommands: []) ~> sink1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable4')]"
+			]
+		}
+	]
+}
