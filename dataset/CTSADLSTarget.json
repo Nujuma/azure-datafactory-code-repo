@@ -1,0 +1,20 @@
+{
+	"name": "CTSADLSTarget",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "customerdetails.json",
+				"folderPath": "jobapplication-target",
+				"fileSystem": "adlscontainer"
+			}
+		},
+		"schema": {}
+	}
+}
