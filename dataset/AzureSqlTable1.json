@@ -1,0 +1,52 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "device_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "device_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand",
+				"type": "nvarchar"
+			},
+			{
+				"name": "model",
+				"type": "nvarchar"
+			},
+			{
+				"name": "os",
+				"type": "nvarchar"
+			},
+			{
+				"name": "owner_customer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "status",
+				"type": "nvarchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "datetime2",
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "mydb",
+			"table": "dim_device"
+		}
+	}
+}
