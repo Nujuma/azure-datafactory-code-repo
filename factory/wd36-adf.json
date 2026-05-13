@@ -1,0 +1,15 @@
+{
+	"name": "wd36-adf",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9cedd42a-8572-4ba4-b600-f1b3825553ae",
+		"tenantId": "31434d73-6e9f-41e2-8f8f-a3dbf818063f"
+	}
+}
